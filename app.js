@@ -49,18 +49,18 @@ const $=s=>document.querySelector(s); const by=(arr,id)=>arr.find(x=>x.id===id);
 function compatibleFronts(){const b=state.body;return lib.fronts.filter(f=>f.compatible==='any'||f.compatible.includes(b));}
 function render(){
  const body=by(lib.bodies,state.body), front=by(lib.fronts,state.front), roof=by(lib.roofs,state.roof), liv=by(lib.liveries,state.livery);
- $('#app').innerHTML=`<header><h1>車両工房 RVS β0.6｜${state.project}</h1><div class="toolbar"><button class="primary" onclick="saveRvs()">.rvs保存</button><button onclick="loadRvs()">読込</button><button onclick="exportPng()">PNG出力</button><button onclick="loadDemo()">デモ再読込</button></div></header>
+ $('#app').innerHTML=`<header><h1>車両工房 RVS β0.7｜${state.project}</h1><div class="toolbar"><button class="primary" onclick="saveRvs()">.rvs保存</button><button onclick="loadRvs()">読込</button><button onclick="exportPng()">PNG出力</button><button onclick="loadDemo()">デモ再読込</button></div></header>
  <main class="layout"><section class="card"><h2>組立工場</h2><div class="inner">
  ${selector('車体 BODY','body',lib.bodies)}${selector('前面 FRONT','front',compatibleFronts())}${selector('屋根 ROOF','roof',lib.roofs)}${selector('塗装 LIVERY','livery',lib.liveries)}
  <h3>車両情報</h3><div class="row"><label>車番</label><input value="${state.vehicleNumber}" oninput="state.vehicleNumber=this.value;render()"></div><div class="row"><label>種別</label><input value="${state.service}" oninput="state.service=this.value;render()"></div><div class="row"><label>表示</label><input value="${state.destination}" oninput="state.destination=this.value;render()"></div>
- <h3>β0.6実車化</h3><div class="mini">形式別の窓・扉・戸袋・妻面・屋根機器・床下機器を描き分け。まだ完全リアルではないが、形式差が見える段階へ移行。</div>
- </div></section><section class="card"><h2>${state.vehicleNumber}</h2><div class="preview"><div class="svgWrap">${vehicleSvg(body,front,roof,liv)}</div></div><div class="credit">DR→Template→Vehicle。画像は保存せず、設計データからSVG生成。提供：白夜車輌製造（Hakuya Train-Manufacturing）</div></section><aside class="card"><h2>プロパティ</h2><div class="inner"><div class="meta"><b>${body.name}</b><br>${body.id} / ${body.dr}<br>車体長 ${body.len.toLocaleString()} mm<br>片側${body.doors}扉 / ${body.pattern}<br>Class ${body.class}<br><br><b>${front.name}</b><br>${front.id}<br><br><b>${roof.name}</b><br>${roof.id}<br>パンタ ${roof.panto} / 冷房 ${roof.ac}<br><br><b>${liv.name}</b><br>${liv.id}</div><h3>描画レイヤー</h3><span class="pill">BODY</span><span class="pill">FRONT</span><span class="pill">WINDOW</span><span class="pill">DOOR</span><span class="pill">ROOF</span><span class="pill">UNDERFLOOR</span><span class="pill">LIVERY</span><h3>互換性</h3><div class="status">${compatibility(body,front)}</div></div></aside></main>`;
+ <h3>β0.7寸法DB</h3><div class="mini">内部単位をmmとして扱い、車体長・ドア中心・窓中心・台車中心・パンタ中心を形式別データとして表示。描画はSVGへ縮尺変換。</div>
+ </div></section><section class="card"><h2>${state.vehicleNumber}</h2><div class="preview"><div class="svgWrap">${vehicleSvg(body,front,roof,liv)}</div></div><div class="credit">DR→Template→Vehicle。画像は保存せず、設計データからSVG生成。提供：白夜車輌製造（Hakuya Train-Manufacturing）</div></section><aside class="card"><h2>プロパティ</h2><div class="inner"><div class="meta"><b>${body.name}</b><br>${body.id} / ${body.dr}<br>車体長 ${body.len.toLocaleString()} mm<br>片側${body.doors}扉 / ${body.pattern}<br>Class ${body.class}<br><br><b>${front.name}</b><br>${front.id}<br><br><b>${roof.name}</b><br>${roof.id}<br>パンタ ${roof.panto} / 冷房 ${roof.ac}<br><br><b>${liv.name}</b><br>${liv.id}</div><h3>寸法DB</h3><div class="dimTable">${dimensionTable(body,roof)}</div><h3>描画レイヤー</h3><span class="pill">BODY</span><span class="pill">FRONT</span><span class="pill">WINDOW</span><span class="pill">DOOR</span><span class="pill">ROOF</span><span class="pill">UNDERFLOOR</span><span class="pill">LIVERY</span><h3>互換性</h3><div class="status">${compatibility(body,front)}</div></div></aside></main>`;
 }
 function selector(title,key,items){return `<h3>${title}</h3><select onchange="state.${key}=this.value;if('${key}'==='body'&&!compatibleFronts().some(f=>f.id===state.front))state.front='FRONT-0000';render()">${items.map(i=>`<option value="${i.id}" ${state[key]===i.id?'selected':''}>${i.name}｜${i.id}${i.dr?'｜'+i.dr:''}</option>`).join('')}</select>`}
 function compatibility(body,front){let ok=front.compatible==='any'||front.compatible.includes(body.id);return ok?'<span class="ok">● 前面互換OK</span><span class="ok">● SVG生成OK</span><span class="ok">● 実車化レイヤーON</span>':'<span class="bad">● 前面非互換</span>'}
 function vehicleSvg(b,f,r,l){
  const W=1280,H=390,bodyY=114,bodyH=b.height,cab=b.cab||0,scaleLen=b.len/20000;let bodyW=1120*scaleLen;if(bodyW>1180)bodyW=1180;let x0=(W-bodyW)/2, stripeY=bodyY+bodyH*0.60;let doors=doorXs(b.doors,b.pattern,x0,bodyW);let wins=windows(b.pattern,b.doors,bodyY,x0,bodyW);
- return `<svg id="rvs-svg" viewBox="0 0 ${W} ${H}" width="1280" height="390" xmlns="http://www.w3.org/2000/svg"><defs>${defs(l)}</defs><rect width="${W}" height="${H}" fill="#050915"/><g id="guide"><line x1="${x0}" x2="${x0+bodyW}" y1="${bodyY+bodyH+58}" y2="${bodyY+bodyH+58}" stroke="#263551" stroke-width="2"/><text x="38" y="34" fill="#94a3b8" font-size="13">RVS β0.6 / ${b.name} / ${b.len.toLocaleString()}mm</text></g><g id="roof">${roofSvg(r,x0,bodyW,bodyY,b)}</g><g id="body">${bodyShell(b,x0,bodyY,bodyW,bodyH,l)}${liverySvg(l,b,x0,bodyY,bodyW,bodyH,stripeY)}${frontSvg(f,b,x0,bodyY,bodyW,bodyH,cab,l)}</g><g id="windows">${wins.map(w=>win(w)).join('')}</g><g id="doors">${doors.map(d=>door(d,b,bodyY,bodyH)).join('')}</g><g id="under">${underSvg(b,r,x0,bodyW,bodyY+bodyH)}</g><g id="text"><rect x="${W/2-78}" y="${bodyY+18}" width="156" height="20" rx="4" fill="#111827" stroke="#475569"/><text x="${W/2}" y="${bodyY+33}" text-anchor="middle" font-size="11" fill="#f8fafc">${state.destination}</text><text x="${W/2}" y="78" text-anchor="middle" font-size="16" fill="#e5e7eb">${state.vehicleNumber}</text><text x="40" y="354" font-size="13" fill="#94a3b8">${b.id} + ${f.id} + ${r.id} + ${l.id}</text></g></svg>`
+ return `<svg id="rvs-svg" viewBox="0 0 ${W} ${H}" width="1280" height="390" xmlns="http://www.w3.org/2000/svg"><defs>${defs(l)}</defs><rect width="${W}" height="${H}" fill="#050915"/><g id="guide"><line x1="${x0}" x2="${x0+bodyW}" y1="${bodyY+bodyH+58}" y2="${bodyY+bodyH+58}" stroke="#263551" stroke-width="2"/><text x="38" y="34" fill="#94a3b8" font-size="13">RVS β0.7 / ${b.name} / ${b.len.toLocaleString()}mm / mm座標DB</text><line x1="${x0}" x2="${x0+bodyW}" y1="54" y2="54" stroke="#7dd3fc" stroke-width="1" opacity=".75"/><line x1="${x0}" x2="${x0}" y1="48" y2="60" stroke="#7dd3fc"/><line x1="${x0+bodyW}" x2="${x0+bodyW}" y1="48" y2="60" stroke="#7dd3fc"/><text x="${x0+bodyW/2}" y="49" fill="#bae6fd" font-size="12" text-anchor="middle">${b.len.toLocaleString()} mm</text></g><g id="roof">${roofSvg(r,x0,bodyW,bodyY,b)}</g><g id="body">${bodyShell(b,x0,bodyY,bodyW,bodyH,l)}${liverySvg(l,b,x0,bodyY,bodyW,bodyH,stripeY)}${frontSvg(f,b,x0,bodyY,bodyW,bodyH,cab,l)}</g><g id="windows">${wins.map(w=>win(w)).join('')}</g><g id="doors">${doors.map(d=>door(d,b,bodyY,bodyH)).join('')}</g><g id="under">${underSvg(b,r,x0,bodyW,bodyY+bodyH)}</g><g id="text"><rect x="${W/2-78}" y="${bodyY+18}" width="156" height="20" rx="4" fill="#111827" stroke="#475569"/><text x="${W/2}" y="${bodyY+33}" text-anchor="middle" font-size="11" fill="#f8fafc">${state.destination}</text><text x="${W/2}" y="78" text-anchor="middle" font-size="16" fill="#e5e7eb">${state.vehicleNumber}</text><text x="40" y="354" font-size="13" fill="#94a3b8">${b.id} + ${f.id} + ${r.id} + ${l.id}</text></g></svg>`
 }
 function defs(l){return `<linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="${l.base}"/><stop offset="1" stop-color="#d9e2ee"/></linearGradient><linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a7f3ff"/><stop offset=".22" stop-color="#1e6974"/><stop offset="1" stop-color="#061c24"/></linearGradient><linearGradient id="doorMetal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e6eef7"/><stop offset=".5" stop-color="#cbd7e6"/><stop offset="1" stop-color="#f8fbff"/></linearGradient><filter id="soft"><feDropShadow dx="0" dy="2" stdDeviation="1" flood-color="#000" flood-opacity=".45"/></filter>`}
 function bodyShell(b,x,y,w,h,l){let r=b.type.includes('limited')?24:7;let nose=b.type.includes('limited')?18:0;let s=`<rect x="${x+nose}" y="${y}" width="${w-nose*2}" height="${h}" rx="${r}" fill="url(#metal)" stroke="#0f172a" stroke-width="5" filter="url(#soft)"/>`;
@@ -98,7 +98,47 @@ function frontSvg(f,b,x,y,w,h,cab,l){if(f.shape==='none'||cab===0)return'';let l
 }
 function underSvg(b,r,x,w,baseY){let s='';let boxes=[.06,.12,.19,.31,.38,.45,.52,.60,.68,.76,.84,.91];boxes.forEach((p,i)=>{let bx=x+p*w, bw=[48,58,74,54,50,78,55,66,48,82,55,62][i%12], bh=[25,31,22,35,28,31,25,34,24,30,26,32][i%12];s+=`<rect x="${bx}" y="${baseY+13+(i%2)*4}" width="${bw}" height="${bh}" rx="2" fill="#111827" stroke="#334155"/><circle cx="${bx+10}" cy="${baseY+23}" r="1.5" fill="#facc15" opacity=".65"/>`});return s+bogie(x+w*.17,baseY+47)+bogie(x+w*.83,baseY+47)}
 function bogie(cx,y){return `<g filter="url(#soft)"><rect x="${cx-92}" y="${y-24}" width="184" height="32" fill="#0f172a"/><path d="M${cx-78} ${y-18} L${cx+78} ${y-18} L${cx+60} ${y+20} L${cx-60} ${y+20} Z" fill="#111827" stroke="#334155"/><circle cx="${cx-44}" cy="${y+6}" r="25" fill="#020617" stroke="#64748b" stroke-width="3"/><circle cx="${cx+44}" cy="${y+6}" r="25" fill="#020617" stroke="#64748b" stroke-width="3"/><circle cx="${cx-44}" cy="${y+6}" r="8" fill="#1e293b"/><circle cx="${cx+44}" cy="${y+6}" r="8" fill="#1e293b"/><path d="M${cx-72} ${y-4} Q${cx} ${y+20} ${cx+72} ${y-4}" stroke="#475569" fill="none"/></g>`}
-function saveRvs(){const blob=new Blob([JSON.stringify({rvs:'0.6',state},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='odorail-beta06.rvs';a.click()}
+
+function bodyMetrics(b){
+ const width={commuter:2800,suburban:2950,green:2950,suburban3:2950,acdc:2950,battery:2950,diesel:2900,limited:2946}[b.type]||2800;
+ const bodyHeightMm=b.type==='green'?4380:(b.type==='diesel'?4050:(b.type.includes('limited')?4100:4050));
+ const floorMm=1080;
+ const cabMm=b.cab?Math.round(b.cab*(b.len/1120)):0;
+ return {lengthMm:b.len,widthMm:width,bodyHeightMm,floorMm,cabMm,doorCount:b.doors};
+}
+function positionSet(b,r){
+ const m=bodyMetrics(b);
+ const doorCenters={
+  1:[m.lengthMm-3300],
+  2:[3700,m.lengthMm-3700],
+  3:[3300,10000,16700],
+  4:[2600,7200,12800,17400]
+ }[b.doors]||[];
+ let windows=[];
+ if(b.pattern==='e531green') windows=[4200,6200,8600,11000,13400,15800];
+ else if(['e259','787'].includes(b.pattern)) windows=[5200,9200,13200,16600];
+ else if(b.pattern==='kiha54') windows=[2100,5850,8200,10550,12900,15250,19000];
+ else if(['313','521','bec819'].includes(b.pattern)) windows=[5000,8200,11800,15000,18400];
+ else windows=[1700,5000,8200,11200,14600,18000];
+ const bogies=[2500,m.lengthMm-2500];
+ const pantos=r.panto===2?[3600,m.lengthMm-3600]:(r.panto===1?[m.lengthMm-4200]:[]);
+ return {doorCenters,windows,bogies,pantos};
+}
+function dimensionTable(b,r){
+ const m=bodyMetrics(b),p=positionSet(b,r);
+ const row=(k,v)=>`<div class="dimRow"><span>${k}</span><b>${v}</b></div>`;
+ return row('全長',m.lengthMm.toLocaleString()+' mm')+
+ row('車体幅',m.widthMm.toLocaleString()+' mm')+
+ row('車体高',m.bodyHeightMm.toLocaleString()+' mm')+
+ row('床面高',m.floorMm.toLocaleString()+' mm')+
+ row('運転台長',m.cabMm?m.cabMm.toLocaleString()+' mm':'なし')+
+ row('ドア中心',p.doorCenters.map(x=>x.toLocaleString()).join(' / ')+' mm')+
+ row('窓中心',p.windows.map(x=>x.toLocaleString()).join(' / ')+' mm')+
+ row('台車中心',p.bogies.map(x=>x.toLocaleString()).join(' / ')+' mm')+
+ row('パンタ中心',p.pantos.length?p.pantos.map(x=>x.toLocaleString()).join(' / ')+' mm':'なし');
+}
+
+function saveRvs(){const blob=new Blob([JSON.stringify({rvs:'0.7',state},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='odorail-beta07.rvs';a.click()}
 function loadRvs(){let i=document.createElement('input');i.type='file';i.accept='.rvs,.json';i.onchange=()=>{let f=i.files[0];let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);state=d.state||state;render()}catch(e){alert('読込失敗')}};r.readAsText(f)};i.click()}
 function exportPng(){let svg=document.getElementById('rvs-svg');let data=new XMLSerializer().serializeToString(svg);let img=new Image();let url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);img.onload=()=>{let c=document.createElement('canvas');c.width=2560;c.height=780;let ctx=c.getContext('2d');ctx.fillStyle='#050915';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);let a=document.createElement('a');a.download=state.vehicleNumber+'.png';a.href=c.toDataURL('image/png');a.click()};img.src=url}
 function loadDemo(){state={project:'小戸電鉄',vehicleNumber:'クハA771-1',body:'BODY-0003',front:'FRONT-0003',roof:'ROOF-0003',livery:'LIVERY-0002',destination:'WEDDING-LINER',service:'臨時特急'};render()}
