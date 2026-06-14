@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>車両工房 RVS β1.4</title>
+  <title>車両工房 RVS β1.5</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="topbar">
     <div>
       <div class="eyebrow">白夜車輌製造 / Hakuya Train-Manufacturing</div>
-      <h1>車両工房 RVS <span>β1.4</span></h1>
-      <p>屋根・床下革命：AU712 / VCB / 避雷器 / 母線 / VVVF / SIV / MR / 空気タンクを部品化</p>
+      <h1>車両工房 RVS <span>β1.5</span></h1>
+      <p>台車・床下実車化：BOGIE DB / UNDER DB / SS167・DT71風台車 / 床下機器を高密度化</p>
     </div>
     <div class="actions">
       <button id="saveBtn">.rvs保存</button>
@@ -37,9 +37,9 @@
       <label>塗装</label>
       <select id="liverySelect"></select>
       <div class="mini">
-        <b>β1.4追加</b><br>
-        ROOF-0100 AU712 / ROOF-0300 VCB / ROOF-0301 避雷器 / ROOF-0302 母線<br>
-        EQUIP-0200 VVVF / EQUIP-0201 SIV / EQUIP-0202 MR / EQUIP-0203 空気タンク
+        <b>β1.5追加</b><br>
+        BOGIE-SS167 / BOGIE-DT71 / BOGIE-DIESEL / BOGIE-LTD<br>
+        UNDER-TOKYU5000 / UNDER-E531-M / UNDER-A771-M / UNDER-DIESEL
       </div>
     </section>
 
@@ -49,7 +49,7 @@
           <h2 id="title">クハA771-1</h2>
           <p id="subtitle">Template → Vehicle → SVG</p>
         </div>
-        <div id="score" class="score">β1.4</div>
+        <div id="score" class="score">β1.5</div>
       </div>
       <div id="svgWrap" class="svgWrap"></div>
       <div class="note">画像は保存せず、mm座標DBと部品IDからSVGを生成。</div>
@@ -63,7 +63,7 @@
     </section>
   </main>
 
-  <footer>RVS β1.4 / HTM Official Prototype / Created for Odorail design workflow</footer>
+  <footer>RVS β1.5 / HTM Official Prototype / Created for Odorail design workflow</footer>
   <script src="app.js"></script>
 </body>
 </html>
