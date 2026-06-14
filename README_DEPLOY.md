@@ -1,3 +1,4 @@
-# 車両工房 RVS β1.3
+# RVS β1.4 Web公開版
 
-パンタグラフ・冷房・前面の部品分解版。GitHub Pages / Vercel 用。
+GitHubの `index.html`, `app.js`, `style.css` をこのフォルダの3ファイルで上書きしてください。
+Vercelは自動で再デプロイされます。
