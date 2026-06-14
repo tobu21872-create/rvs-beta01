@@ -1,15 +1,5 @@
-# RVS β0.2 Web Public
+# 車両工房 RVS β0.3
 
-Vercel / GitHub Pages向けの静的Webアプリ版です。
+図形集合体の粛清版。DRごとの車体・ドア・窓・前面・屋根の差分をSVGで構造化。
 
-## 変更点
-- DR-001〜DR-011系の車両サンプルを設計データとして登録
-- 車体・前面・塗装を選択できる簡易ビルダー追加
-- 画像は同梱せず、SVGをテンプレートデータから生成
-
-## 配置ファイル
-- index.html
-- app.js
-- style.css
-
-上記3ファイルをGitHubリポジトリ直下へアップロードしてください。
+GitHub上で `index.html`, `app.js`, `style.css` を上書きコミットすると、Vercelが自動再デプロイします。
