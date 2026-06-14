@@ -1,5 +1,3 @@
-# RVS β1.2 Web公開版
+# 車両工房 RVS β1.3
 
-GitHubへ `index.html / app.js / style.css` を上書きアップロードしてください。
-
-β1.2は台車ディテール強化版です。画像は同梱せず、部品ID・寸法・座標データからSVG生成します。
+パンタグラフ・冷房・前面の部品分解版。GitHub Pages / Vercel 用。
