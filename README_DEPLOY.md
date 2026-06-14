@@ -1,10 +1,16 @@
-# RVS β1.5 Web公開版
+# RVS β1.6 Web公開版
 
 ## 更新内容
-- BOGIE DB を導入
-- SS167 / DT71 / TR255 / DIESEL / LTD 風台車描画
-- 床下機器を詳細化：VVVF / SIV / MR / AIR-TANK / BRAKE / ENGINE / FUEL / TOILET-TANK
-- 車体の幕板・靴ずり・裾部ラインを追加
+- FRONT DB一次実装
+- A771 / 東急5000 / E531 / キハ54 / E259 の前面部品を分離
+- 前面窓、ライト、スカート、連結器、ワイパー風線を追加
+- 画像は保存せず、部品ID・寸法・座標データからSVG生成
 
-## 反映方法
-GitHub の `index.html / app.js / style.css` をこのZIP内のファイルで上書きしてください。
+## 配置
+GitHubの既存リポジトリに以下3ファイルを上書きアップロードしてください。
+
+- index.html
+- app.js
+- style.css
+
+VercelはGitHub更新後に自動再デプロイされます。
