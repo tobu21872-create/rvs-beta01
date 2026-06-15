@@ -1,16 +1,9 @@
-# RVS β1.6 Web公開版
+# RVS β1.7 Web公開版
 
 ## 更新内容
-- FRONT DB一次実装
-- A771 / 東急5000 / E531 / キハ54 / E259 の前面部品を分離
-- 前面窓、ライト、スカート、連結器、ワイパー風線を追加
-- 画像は保存せず、部品ID・寸法・座標データからSVG生成
+- BODY構体レイヤ追加
+- BEAD / CORRUGATE / SUS-LINE / SUSTINA / SMOOTH選択対応
+- MASTER-0001 キハ54-500 をBEAD構体実証車として追加
 
-## 配置
-GitHubの既存リポジトリに以下3ファイルを上書きアップロードしてください。
-
-- index.html
-- app.js
-- style.css
-
-VercelはGitHub更新後に自動再デプロイされます。
+## デプロイ
+`index.html` / `app.js` / `style.css` をGitHubへ上書きしてください。

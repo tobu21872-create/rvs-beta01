@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>車両工房 RVS β1.6</title>
+  <title>車両工房 RVS β1.7</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="topbar">
     <div>
       <div class="eyebrow">白夜車輌製造 / Hakuya Train-Manufacturing</div>
-      <h1>車両工房 RVS <span>β1.6</span></h1>
-      <p>前面革命：FRONT DB / 前面窓・ライト・スカート・連結器・ワイパーを部品化</p>
+      <h1>車両工房 RVS <span>β1.7</span></h1>
+      <p>BODY構体革命：BEAD / CORRUGATE / SUS-LINE / SUSTINA を車体レイヤとして選択可能化</p>
     </div>
     <div class="actions">
       <button id="saveBtn">.rvs保存</button>
@@ -23,11 +23,13 @@
 
   <main class="layout">
     <section class="panel library">
-      <h2>組立工場</h2>
+      <h2>構体工房</h2>
       <label>車両サンプル</label>
       <select id="vehicleSelect"></select>
       <label>車体</label>
       <select id="bodySelect"></select>
+      <label>構体レイヤ</label>
+      <select id="structureSelect"></select>
       <label>前面</label>
       <select id="frontSelect"></select>
       <label>屋根</label>
@@ -37,22 +39,22 @@
       <label>塗装</label>
       <select id="liverySelect"></select>
       <div class="mini">
-        <b>β1.6追加</b><br>
-        BOGIE-SS167 / BOGIE-DT71 / BOGIE-DIESEL / BOGIE-LTD<br>
-        UNDER-TOKYU5000 / UNDER-E531-M / UNDER-A771-M / UNDER-DIESEL
+        <b>β1.7追加</b><br>
+        BODY-BEAD / BODY-CORRUGATE / BODY-SUSLINE / BODY-SUSTINA<br>
+        MASTER-0001 キハ54-500：BEAD構体マスター実証車
       </div>
     </section>
 
     <section class="panel canvasPanel">
       <div class="canvasHeader">
         <div>
-          <h2 id="title">クハA771-1</h2>
-          <p id="subtitle">Template → Vehicle → SVG</p>
+          <h2 id="title">キハA505-1</h2>
+          <p id="subtitle">Structure → Body → Vehicle → SVG</p>
         </div>
-        <div id="score" class="score">β1.6</div>
+        <div id="score" class="score">β1.7</div>
       </div>
       <div id="svgWrap" class="svgWrap"></div>
-      <div class="note">画像は保存せず、mm座標DBと部品IDからSVGを生成。</div>
+      <div class="note">画像は保存せず、mm座標DB・構体種別・部品IDからSVGを生成。</div>
     </section>
 
     <section class="panel props">
@@ -63,7 +65,7 @@
     </section>
   </main>
 
-  <footer>RVS β1.6 / HTM Official Prototype / Created for Odorail design workflow</footer>
+  <footer>RVS β1.7 / HTM Official Prototype / BODY Structure Engine</footer>
   <script src="app.js"></script>
 </body>
 </html>
