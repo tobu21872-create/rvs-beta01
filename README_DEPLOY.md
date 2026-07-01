@@ -1,9 +1,14 @@
-# RVS β1.7 Web公開版
+# RVS β1.8 Web公開版
 
-## 更新内容
-- BODY構体レイヤ追加
-- BEAD / CORRUGATE / SUS-LINE / SUSTINA / SMOOTH選択対応
-- MASTER-0001 キハ54-500 をBEAD構体実証車として追加
+## 追加内容
+- WINDOW-K54-0001 実装
+- Hゴム
+- アルミサッシ
+- 下降窓表現
+- ガラス反射
+- ドア窓補正
+- 運転台窓補正
 
-## デプロイ
-`index.html` / `app.js` / `style.css` をGitHubへ上書きしてください。
+## 反映方法
+GitHub上の `index.html / app.js / style.css` をこのZIP内の同名ファイルで上書きしてください。
+その後、Vercelが自動で再デプロイします。

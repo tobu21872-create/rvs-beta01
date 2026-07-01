@@ -54,23 +54,71 @@ function drawStructureLayer(b,s,l){let out='';
  }
  return out;
 }
-function drawWindow(x,y,w,h,bType='normal'){let split=bType==='diesel';return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#152238" stroke="#0f172a" stroke-width="2"/><rect x="${x+4}" y="${y+4}" width="${w-8}" height="${Math.max(8,h/3)}" rx="2" fill="rgba(255,255,255,.18)"/>${split?`<line x1="${x}" y1="${y+h/2}" x2="${x+w}" y2="${y+h/2}" stroke="#94a3b8" stroke-width="1"/><line x1="${x+w/2}" y1="${y+2}" x2="${x+w/2}" y2="${y+h-2}" stroke="#64748b"/>`:`<line x1="${x+w/2}" y1="${y+2}" x2="${x+w/2}" y2="${y+h-2}" stroke="#64748b"/>`}</g>`}
-function drawDoor(x,y,w,h,kind='commuter'){return `<g><rect x="${x-3}" y="${y-3}" width="${w+6}" height="${h+6}" rx="3" fill="rgba(15,23,42,.12)"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="#edf2f7" stroke="#334155" stroke-width="2"/><line x1="${x+w/2}" y1="${y+4}" x2="${x+w/2}" y2="${y+h-4}" stroke="#64748b"/><rect x="${x+10}" y="${y+16}" width="${w-20}" height="${kind==='diesel'?24:30}" rx="3" fill="#172033"/><rect x="${x+4}" y="${y+h-9}" width="${w-8}" height="4" fill="#94a3b8"/><path d="M${x} ${y+h+5} H${x+w}" stroke="#6b7280" stroke-width="2"/></g>`}
-function drawFrontEnd(f,l,b){const kiha=f.id.includes('K54'); if(kiha)return `<g class="frontUnit"><rect x="40" y="95" width="135" height="150" rx="8" fill="${l.base}" stroke="#243044" stroke-width="3"/><rect x="58" y="111" width="42" height="44" rx="4" fill="#111827"/><rect x="112" y="111" width="42" height="44" rx="4" fill="#111827"/><line x1="108" y1="105" x2="108" y2="235" stroke="#64748b" stroke-width="2"/><rect x="54" y="177" width="108" height="10" fill="${l.stripe}"/><circle cx="70" cy="201" r="5" fill="#fde68a"/><circle cx="148" cy="201" r="5" fill="#fde68a"/><circle cx="70" cy="216" r="4" fill="#dc2626"/><circle cx="148" cy="216" r="4" fill="#dc2626"/><path d="M40 238 H176 V252 H52 Z" fill="#111827" opacity=".82"/><rect x="94" y="246" width="35" height="14" rx="4" fill="#334155"/><path d="M52 257 H164" stroke="#64748b" stroke-width="3"/></g>`;
- if(f.id.includes('A771'))return `<g class="frontUnit"><path d="M40 99 C58 93 125 92 185 101 L185 245 L40 245 Z" fill="${l.base}" stroke="#243044" stroke-width="3"/><path d="M58 112 H166 V168 H58 Z" fill="#111827"/><rect x="68" y="122" width="38" height="36" rx="4" fill="#334155"/><rect x="115" y="122" width="42" height="36" rx="4" fill="#334155"/><rect x="66" y="175" width="80" height="12" rx="4" fill="#111827"/><circle cx="62" cy="198" r="5" fill="#fef3c7"/><circle cx="158" cy="198" r="5" fill="#fef3c7"/><path d="M40 238 H182 L200 250 H52 Z" fill="#111827" opacity=".82"/><rect x="96" y="247" width="45" height="13" rx="5" fill="#334155"/></g>`;
- return `<g class="frontUnit"><path d="M40 99 C62 94 125 94 178 102 L178 245 L40 245 Z" fill="${l.base}" stroke="#243044" stroke-width="3"/><rect x="60" y="116" width="94" height="50" rx="6" fill="#111827"/><rect x="68" y="124" width="37" height="34" rx="3" fill="#334155"/><rect x="111" y="124" width="35" height="34" rx="3" fill="#334155"/><rect x="68" y="176" width="65" height="12" rx="3" fill="#111827"/><circle cx="57" cy="198" r="5" fill="#fde68a"/><circle cx="150" cy="198" r="5" fill="#fde68a"/><path d="M40 236 H174 L190 247 H48 Z" fill="#111827" opacity=".75"/><rect x="95" y="244" width="42" height="13" rx="5" fill="#334155"/></g>`}
+function drawWindow(x,y,w,h,kind='normal'){
+  const diesel = kind==='diesel';
+  const rx = diesel ? 2 : 4;
+  let out = `<g class="window window-${kind}">`;
+  // outer frame and H-gum
+  out += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="#0b1220" stroke="#111827" stroke-width="1.5"/>`;
+  out += `<rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" rx="${Math.max(1,rx-1)}" fill="#1f2937" stroke="#0f172a" stroke-width="2"/>`;
+  // aluminum sash frame
+  out += `<rect x="${x+5}" y="${y+5}" width="${w-10}" height="${h-10}" rx="2" fill="url(#glassGrad)" stroke="#cfd8e3" stroke-width="1.2"/>`;
+  // center sash / divider
+  out += `<line x1="${x+w/2}" y1="${y+6}" x2="${x+w/2}" y2="${y+h-6}" stroke="#dbe4ee" stroke-width="1.1" opacity=".95"/>`;
+  out += `<line x1="${x+w/2+1.5}" y1="${y+6}" x2="${x+w/2+1.5}" y2="${y+h-6}" stroke="#64748b" stroke-width="0.8" opacity=".8"/>`;
+  if(diesel){
+    // sliding window look: upper movable / lower fixed
+    const splitY = y + Math.round(h*0.54);
+    out += `<line x1="${x+5}" y1="${splitY}" x2="${x+w-5}" y2="${splitY}" stroke="#dbe4ee" stroke-width="1.1" opacity=".9"/>`;
+    out += `<line x1="${x+5}" y1="${splitY+1.5}" x2="${x+w-5}" y2="${splitY+1.5}" stroke="#64748b" stroke-width="0.8" opacity=".7"/>`;
+    out += `<rect x="${x+9}" y="${y+10}" width="${w-18}" height="${Math.max(8, h*0.18)}" rx="2" fill="rgba(255,255,255,.14)"/>`;
+    out += `<path d="M${x+9} ${y+11} C${x+17} ${y+7}, ${x+33} ${y+8}, ${x+44} ${y+16}" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="2" opacity=".85"/>`;
+  }else{
+    out += `<rect x="${x+7}" y="${y+7}" width="${w-14}" height="${Math.max(8, h*0.22)}" rx="2" fill="rgba(255,255,255,.12)"/>`;
+    out += `<path d="M${x+10} ${y+12} C${x+20} ${y+8}, ${x+34} ${y+8}, ${x+48} ${y+18}" fill="none" stroke="rgba(255,255,255,.36)" stroke-width="2" opacity=".72"/>`;
+  }
+  // lower shadow / glass tone
+  out += `<rect x="${x+6}" y="${y+h*0.58}" width="${w-12}" height="${h*0.28}" rx="1" fill="rgba(10,15,25,.18)"/>`;
+  out += `</g>`;
+  return out;
+}
+function drawDoor(x,y,w,h,kind='commuter'){
+  const diesel = kind==='diesel';
+  const winH = diesel ? 24 : 30;
+  const winY = y+16;
+  const sillY = y+h-9;
+  let out = `<g class="door door-${kind}">`;
+  out += `<rect x="${x-3}" y="${y-3}" width="${w+6}" height="${h+6}" rx="3" fill="rgba(15,23,42,.12)"/>`;
+  out += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="#edf2f7" stroke="#334155" stroke-width="2"/>`;
+  out += `<line x1="${x+w/2}" y1="${y+4}" x2="${x+w/2}" y2="${y+h-4}" stroke="#94a3b8" stroke-width="1.2"/>`;
+  out += `<rect x="${x+10}" y="${winY}" width="${w-20}" height="${winH}" rx="3" fill="#111827" stroke="#0f172a" stroke-width="1"/>`;
+  out += `<rect x="${x+13}" y="${winY+3}" width="${w-26}" height="${winH-6}" rx="2" fill="url(#glassGrad)" stroke="#cfd8e3" stroke-width="0.8"/>`;
+  out += `<path d="M${x+16} ${winY+6} C${x+25} ${winY+2}, ${x+36} ${winY+4}, ${x+w-16} ${winY+10}" fill="none" stroke="rgba(255,255,255,.36)" stroke-width="2"/>`;
+  out += `<rect x="${x+4}" y="${sillY}" width="${w-8}" height="4" fill="#94a3b8"/>`;
+  out += `<path d="M${x} ${y+h+5} H${x+w}" stroke="#6b7280" stroke-width="2"/>`;
+  out += `</g>`;
+  return out;
+}
+function drawFrontWindow(x,y,w,h){
+  return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="#0f172a" stroke="#111827" stroke-width="2"/><rect x="${x+4}" y="${y+4}" width="${w-8}" height="${h-8}" rx="3" fill="url(#glassGrad)" stroke="#cfd8e3" stroke-width="1"/><path d="M${x+8} ${y+8} C${x+18} ${y+2}, ${x+30} ${y+5}, ${x+w-8} ${y+16}" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2"/><line x1="${x+w-6}" y1="${y+h-4}" x2="${x+w-16}" y2="${y+h-18}" stroke="#cbd5e1" stroke-width="1.2" opacity=".8"/></g>`;
+}
+function drawFrontEnd(f,l,b){
+ const kiha=f.id.includes('K54');
+ if(kiha)return `<g class="frontUnit"><rect x="40" y="95" width="135" height="150" rx="8" fill="${l.base}" stroke="#243044" stroke-width="3"/>${drawFrontWindow(58,111,42,44)}${drawFrontWindow(112,111,42,44)}<line x1="108" y1="105" x2="108" y2="235" stroke="#64748b" stroke-width="2"/><rect x="54" y="177" width="108" height="10" fill="${l.stripe}"/><circle cx="70" cy="201" r="5" fill="#fde68a"/><circle cx="148" cy="201" r="5" fill="#fde68a"/><circle cx="70" cy="216" r="4" fill="#dc2626"/><circle cx="148" cy="216" r="4" fill="#dc2626"/><path d="M40 238 H176 V252 H52 Z" fill="#111827" opacity=".82"/><rect x="94" y="246" width="35" height="14" rx="4" fill="#334155"/><path d="M52 257 H164" stroke="#64748b" stroke-width="3"/></g>`;
+ if(f.id.includes('A771'))return `<g class="frontUnit"><path d="M40 99 C58 93 125 92 185 101 L185 245 L40 245 Z" fill="${l.base}" stroke="#243044" stroke-width="3"/><path d="M58 112 H166 V168 H58 Z" fill="#111827"/>${drawFrontWindow(68,122,38,36)}${drawFrontWindow(115,122,42,36)}<rect x="66" y="175" width="80" height="12" rx="4" fill="#111827"/><circle cx="62" cy="198" r="5" fill="#fef3c7"/><circle cx="158" cy="198" r="5" fill="#fef3c7"/><path d="M40 238 H182 L200 250 H52 Z" fill="#111827" opacity=".82"/><rect x="96" y="247" width="45" height="13" rx="5" fill="#334155"/></g>`;
+ return `<g class="frontUnit"><path d="M40 99 C62 94 125 94 178 102 L178 245 L40 245 Z" fill="${l.base}" stroke="#243044" stroke-width="3"/><rect x="60" y="116" width="94" height="50" rx="6" fill="#111827"/>${drawFrontWindow(68,124,37,34)}${drawFrontWindow(111,124,35,34)}<rect x="68" y="176" width="65" height="12" rx="3" fill="#111827"/><circle cx="57" cy="198" r="5" fill="#fde68a"/><circle cx="150" cy="198" r="5" fill="#fde68a"/><path d="M40 236 H174 L190 247 H48 Z" fill="#111827" opacity=".75"/><rect x="95" y="244" width="42" height="13" rx="5" fill="#334155"/></g>`}
 function drawBogie(cx,y,type='SS167'){const cfg={SS167:['SS167','#263244'],DT71:['DT71','#1f2937'],TR255:['TR255','#334155'],DIESEL:['DT22','#3f3f46'],FS777:['FS','#263244']}[type]||['BOGIE','#263244'];return `<g transform="translate(${cx-86},${y})"><rect x="10" y="18" width="152" height="28" rx="8" fill="${cfg[1]}" stroke="#0f172a" stroke-width="2"/><rect x="36" y="2" width="100" height="16" rx="4" fill="#58657a"/><path d="M22 31 C48 16 124 16 150 31" fill="none" stroke="#8fa1bc" stroke-width="4"/><circle cx="45" cy="54" r="21" fill="#111827" stroke="#0f172a" stroke-width="5"/><circle cx="127" cy="54" r="21" fill="#111827" stroke="#0f172a" stroke-width="5"/><circle cx="45" cy="54" r="10" fill="#64748b"/><circle cx="127" cy="54" r="10" fill="#64748b"/><rect x="31" y="37" width="28" height="15" rx="3" fill="#66758c"/><rect x="113" y="37" width="28" height="15" rx="3" fill="#66758c"/><path d="M58 20 q12 20 28 0 q12 20 28 0" fill="none" stroke="#cbd5e1" stroke-width="3"/><text x="86" y="82" text-anchor="middle" font-size="9" fill="#334155">${cfg[0]}</text></g>`}
 function drawCooler(x,y,label){return `<g><rect x="${x}" y="${y}" width="150" height="38" rx="8" fill="#d8e0ea" stroke="#475569" stroke-width="2"/><rect x="${x+12}" y="${y+9}" width="46" height="20" rx="3" fill="#94a3b8"/><circle cx="${x+82}" cy="${y+19}" r="10" fill="#64748b"/><circle cx="${x+113}" cy="${y+19}" r="10" fill="#64748b"/><text x="${x+75}" y="${y-4}" text-anchor="middle" font-size="10" fill="#334155">${label}</text></g>`}
 function drawPantograph(x,y){return `<g><rect x="${x-32}" y="${y+40}" width="64" height="8" rx="3" fill="#334155"/><path d="M${x-48} ${y+6} L${x} ${y+36} L${x+48} ${y+6}" fill="none" stroke="#1f2937" stroke-width="4"/><path d="M${x-34} ${y+6} L${x} ${y+36} L${x+34} ${y+6}" fill="none" stroke="#64748b" stroke-width="2"/><line x1="${x-60}" y1="${y+4}" x2="${x+60}" y2="${y+4}" stroke="#111827" stroke-width="4"/></g>`}
 function drawUnderItem(x,y,type){const box=(w,h,c,t)=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="${c}" stroke="#111827"/><text x="${x+w/2}" y="${y+h-10}" text-anchor="middle" font-size="10" fill="#f8fafc">${t}</text></g>`;if(type==='ENGINE')return box(104,54,'#374151','ENGINE');if(type==='FUEL')return `<g><rect x="${x}" y="${y+12}" width="100" height="30" rx="15" fill="#4b5563" stroke="#111827"/><text x="${x+50}" y="${y+32}" text-anchor="middle" font-size="10" fill="#f8fafc">FUEL</text></g>`;if(type==='AIR-TANK')return `<g><rect x="${x}" y="${y+14}" width="92" height="25" rx="13" fill="#64748b" stroke="#1f2937"/><text x="${x+46}" y="${y+31}" text-anchor="middle" font-size="10" fill="#e5e7eb">AIR</text></g>`;return box(82,44,'#475569',type)}
-function render(){const b=bodies[state.body],s=structures[state.structure],f=fronts[state.front],r=roofs[state.roof],u=under[state.under],l=liveries[state.livery];$('title').textContent=state.name||'RVS Vehicle';$('subtitle').textContent=`${s.id} + ${b.id} + ${f.id} + ${r.id}`;let svg=`<svg id="trainSvg" viewBox="0 0 1000 360" width="100%" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="beadGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#94a3b8"/><stop offset="1" stop-color="#fff"/></linearGradient><linearGradient id="corrGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#64748b"/><stop offset=".5" stop-color="#f8fafc"/><stop offset="1" stop-color="#64748b"/></linearGradient></defs>`;
+function render(){const b=bodies[state.body],s=structures[state.structure],f=fronts[state.front],r=roofs[state.roof],u=under[state.under],l=liveries[state.livery];$('title').textContent=state.name||'RVS Vehicle';$('subtitle').textContent=`${s.id} + ${b.id} + ${f.id} + ${r.id}`;let svg=`<svg id="trainSvg" viewBox="0 0 1000 360" width="100%" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="beadGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#94a3b8"/><stop offset="1" stop-color="#fff"/></linearGradient><linearGradient id="corrGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#64748b"/><stop offset=".5" stop-color="#f8fafc"/><stop offset="1" stop-color="#64748b"/></linearGradient><linearGradient id="glassGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#98b4d4" stop-opacity=".92"/><stop offset=".42" stop-color="#324763" stop-opacity=".96"/><stop offset="1" stop-color="#172233" stop-opacity="1"/></linearGradient></defs>`;
 svg+=`<rect x="40" y="95" width="920" height="150" rx="${s.type==='SUSTINA'?8:14}" fill="${l.base}" stroke="#243044" stroke-width="3"/>`;
 svg+=drawStructureLayer(b,s,l);
 svg+=`<path d="M45 215 H955 V245 H45 Z" fill="${l.lower}" opacity="${s.type==='BEAD'?'.72':'.88'}"/><rect x="40" y="170" width="920" height="14" fill="${l.stripe}"/><rect x="40" y="186" width="920" height="5" fill="${l.accent}"/>`;
 svg+=drawFrontEnd(f,l,b);
 svg+=`<rect x="876" y="112" width="66" height="55" rx="6" fill="#152238"/>`;
 (b.pockets||[]).forEach(x=>svg+=`<rect x="${mmX(x,b)-11}" y="126" width="22" height="78" rx="2" fill="#e2e8f0" stroke="#cbd5e1"/>`);
-(b.windows||[]).forEach(x=>svg+=drawWindow(mmX(x,b)-38,124,76,b.type==='diesel'?50:42,b.type));
+(b.windows||[]).forEach(x=>svg+=drawWindow(mmX(x,b)-38,124,76,b.type==='diesel'?52:42,b.type));
 (b.doors||[]).forEach(x=>svg+=drawDoor(mmX(x,b)-27,118,54,b.type==='diesel'?105:100,b.type));
 svg+=`<rect x="450" y="137" width="110" height="22" rx="3" fill="#0f172a"/><text x="505" y="153" text-anchor="middle" font-size="13" fill="#f8fafc">${state.service||'RVS'}</text>`;
 svg+=`<path d="M70 92 C250 62 750 62 930 92" fill="none" stroke="#94a3b8" stroke-width="5" opacity=".8"/>`;
@@ -80,10 +128,10 @@ if(r.vents){[360,640].forEach(x=>svg+=`<g><rect x="${x}" y="76" width="38" heigh
 let ux=145;(u.items||[]).forEach(it=>{svg+=drawUnderItem(ux,260,it);ux+=90});
 (b.bogies||[]).forEach(x=>svg+=drawBogie(mmX(x,b),276,b.bogieType));
 svg+=`<text x="50" y="336" font-size="12" fill="#334155">${b.dr} / ${s.id} / ${b.length}mm / ${s.note}</text></svg>`;
-$('svgWrap').innerHTML=svg;$('props').innerHTML=rows([['構体',`${s.id} ${s.name}`],['車体',`${b.id} ${b.name}`],['前面',`${f.id} ${f.name}`],['屋根',`${r.id} ${r.name}`],['床下',`${u.id} ${u.name}`],['塗装',`${l.id} ${l.name}`],['車体長',`${b.length} mm`],['扉中心',b.doors.join(' / ')],['窓中心',b.windows.join(' / ')],['台車',b.bogies.join(' / ')],['台車形式',b.bogieType]]);
-$('compat').innerHTML=rows([['BODY-BEAD','<span class="ok">キハ54 / 211 / 719 / 10030へ展開可</span>'],['MASTER-0001','<span class="ok">キハ54-500 実証中</span>'],['画像保存','<span class="ok">なし：設計データのみ</span>']]);}
+$('svgWrap').innerHTML=svg;$('props').innerHTML=rows([['構体',`${s.id} ${s.name}`],['車体',`${b.id} ${b.name}`],['前面',`${f.id} ${f.name}`],['屋根',`${r.id} ${r.name}`],['床下',`${u.id} ${u.name}`],['塗装',`${l.id} ${l.name}`],['車体長',`${b.length} mm`],['扉中心',b.doors.join(' / ')],['窓中心',b.windows.join(' / ')],['台車',b.bogies.join(' / ')],['台車形式',b.bogieType],['窓部品',b.type==='diesel'?'WINDOW-K54-0001':'WINDOW-STANDARD-0001']]);
+$('compat').innerHTML=rows([['WINDOW-K54-0001','<span class="ok">Hゴム / アルミサッシ / 下降窓 / 反射 実装</span>'],['BODY-BEAD','<span class="ok">キハ54 / 211 / 719 / 10030へ展開可</span>'],['MASTER-0001','<span class="ok">キハ54-500 実証中</span>'],['画像保存','<span class="ok">なし：設計データのみ</span>']]);}
 function rows(arr){return arr.map(([a,b])=>`<div class="propRow"><b>${a}</b><span>${b}</span></div>`).join('')}
-function saveRvs(){const data={app:'RVS',version:'β1.7',state};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rvs_beta17_body_structure.rvs';a.click()}
+function saveRvs(){const data={app:'RVS',version:'β1.8',state};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rvs_beta18_window_k54.rvs';a.click()}
 function loadRvs(e){const file=e.target.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d.state){state=d.state;sync();render()}}catch(err){alert('読込失敗')}};rd.readAsText(file)}
-function exportPng(){const svg=document.getElementById('trainSvg');const data=new XMLSerializer().serializeToString(svg);const img=new Image();const blob=new Blob([data],{type:'image/svg+xml'});const url=URL.createObjectURL(blob);img.onload=()=>{const c=document.createElement('canvas');c.width=1600;c.height=576;const ctx=c.getContext('2d');ctx.fillStyle='#e8eef8';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='rvs_beta17.png';a.click();URL.revokeObjectURL(url)};img.src=url}
+function exportPng(){const svg=document.getElementById('trainSvg');const data=new XMLSerializer().serializeToString(svg);const img=new Image();const blob=new Blob([data],{type:'image/svg+xml'});const url=URL.createObjectURL(blob);img.onload=()=>{const c=document.createElement('canvas');c.width=1600;c.height=576;const ctx=c.getContext('2d');ctx.fillStyle='#e8eef8';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='rvs_beta18.png';a.click();URL.revokeObjectURL(url)};img.src=url}
 init();
